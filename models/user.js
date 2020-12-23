@@ -51,7 +51,7 @@ userSchema.virtual("password")
                 return this._password;
             });
 
-userSchema.method = {
+userSchema.methods = {
     authenticate: function(plainpassword){
         return this.securePassword(plainpassword) === this.encry_password;
     },
