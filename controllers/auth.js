@@ -36,8 +36,8 @@ exports.signin = (req,res) => {
    }
 
    User.findOne({email} ,(err,user) => {
-       if(err){
-           res.status(400).json({
+       if(err || !user){
+           return res.status(400).json({
                error:"Email dont exist!"
            })
        }
@@ -46,13 +46,40 @@ exports.signin = (req,res) => {
                 error:"Email and Password dont match!"
             })
        }
-
+       //create token
+       const token = jwt.sign({_id:user._id},process.env.SECRET);
+       //store token
+       res.cookie("token",token,{expire: new Date()+9999});
+       //response to frontend
+       const {_id,name,email,role} = user;
+       return res.json({token,user:{_id,name,email,role}});
    })
 
-}
+};
 
 
 exports.signout = (req,res) => {
-    res.send("User Signou");
+    res.clearCookie("token");
+    res.json({
+        message:"Signed out Successfully!"
+    })
 };
 
+// protected routes
+
+exports.isSignedIn = expressJwt({
+    secret:process.env.SECRET,
+    userProperty:"auth"
+});
+
+// custom middleware
+
+exports.isAuthenticated = (req,res,next) => {
+    const checker = req.profile && req.auth && req.profile._id === req.auth._id;
+    if(!checker){
+        return res.status(403).json({
+            error:"ACCESS DENIED"
+        })
+    }
+    next()
+}
