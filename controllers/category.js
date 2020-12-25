@@ -39,3 +39,30 @@ exports.getAllCategory = (req,res) => {
         res.json(categories);
     })
 }
+
+exports.updateCategory = (req,res) => {
+    const category = req.category;
+    category.name = req.body.name;
+    category.save((err,updatedCategory) => {
+        if(err || !updatedCategory){
+            return res.status(400).json({
+                error:"Couldn't update Category!"
+            });
+        }
+        res.json(updatedCategory);
+    });
+};
+
+exports.removeCategory = (req,res) => {
+    const category = req.category; //we could access category from above getCategoryById middleware
+    category.remove((err,category) => {
+        if(err || !category){
+            return res.status(400).json({
+                error:"Couldn't remove Category!"
+            });
+        }
+        res.json({
+            message:`Successfully deleted ${category}`
+        });
+    })
+}
