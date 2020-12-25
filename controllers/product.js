@@ -27,7 +27,20 @@ exports.createProduct = (req,res) => {
                 error:"Problem with Image"
             });
         };
+        //destructuring the received form-data from frontend
         const {name,description,price,category,stock} = fields;
+
+        if(
+            !name || 
+            !description ||
+            !price ||
+            !category ||
+            !stock
+        ){
+            return res.status(400).json({
+                error:"Include all fields"
+            });
+        }
         let product = new Product(fields);
         if(file.photo){
             if(file.photo.size > 3000000){
