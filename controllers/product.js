@@ -160,4 +160,15 @@ exports.updateStock = (req,res,next) => {
         };
         next();
     })
-}
+};
+
+exports.getAllUniqueCategories = (req,res) => {
+    Product.distinct("category",{},(err,categories) => {
+        if(err){
+            return res.status(400).json({
+                error:"Failed to fetch all Categories"
+            });
+        };
+        return res.json(categories);
+    });
+};
