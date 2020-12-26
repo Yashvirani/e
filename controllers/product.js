@@ -122,4 +122,23 @@ exports.updateProduct = (req,res) => {
             res.json(product);
         });
     });
+};
+
+exports.getAllProducts = (req,res) => {
+    // Query is in form of string so parsing it to int
+    let limit = req.query.limit ? parseInt(req.query.limit) : 8;
+    let sortBy = req.query.sortBy ? req.query.sortBy : "_id";
+    // -ve sign indicate removal in select
+    Product.find()
+            .select("-photo")
+            .populate("category")
+            .sort([[sortBy,"asc"]])
+            .exec((err,products) => {
+                if(err){
+                    return res.status(400).json({
+                        error:"Couldn't fetch the Products"
+                    });
+                };
+                res.json(products);
+            }) 
 }
