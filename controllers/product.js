@@ -75,3 +75,7 @@ exports.photo = (req,res,next) => {
     };
     next();
 };
+
+exports.deleteProduct = (req,res) => {
+    
+}
